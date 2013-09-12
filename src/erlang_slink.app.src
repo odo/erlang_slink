@@ -1,0 +1,8 @@
+{application, erlang_slink, [
+    {description, "Erlang Implementation of SLINK Cluster Algorithm"},
+    {vsn, git},
+    {registered, []},
+    {modules, []},
+    {applications, []},
+    {env, []}
+]}.
