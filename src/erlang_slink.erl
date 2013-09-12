@@ -4,7 +4,9 @@
     cluster/1,
     cluster/2,
     find/3,
-    find/4
+    find/4,
+    strip_dists/1,
+    distance/2
 ]).
 
 -compile({inline,[insert/3, lookup/2]}).

@@ -16,7 +16,7 @@ test_cluster1() ->
             {[43], fortythree}, {[0], zero}, {[57], fiftyseven}, {[48], fortyeight}],
 
 
-    Cluster = mrs_cluster:cluster(Data),
+    Cluster = erlang_slink:cluster(Data),
     Expected = {22.0,
                          [{21.0,[twentyone,zero]},
                           {8.0,
@@ -33,11 +33,11 @@ test_cluster2() ->
         {[17], 3},
         {[18], 4}
     ],
-    Cluster = mrs_cluster:cluster(Items),
+    Cluster = erlang_slink:cluster(Items),
     Expected = [[[0,1],2],[3,4]],
-    ?assert_equal(Expected, mrs_cluster:strip_dists(Cluster)),
+    ?assert_equal(Expected, erlang_slink:strip_dists(Cluster)),
     MatchFun = fun(Data) -> Data =:= 1 end,
-    ?assert_equal([[0, 1], 2], mrs_cluster:strip_dists(mrs_cluster:find(MatchFun, 4, infinity, Cluster))).
+    ?assert_equal([[0, 1], 2], erlang_slink:strip_dists(erlang_slink:find(MatchFun, 4, infinity, Cluster))).
 
 test_find_in_equals() ->
     Items = [
@@ -47,19 +47,19 @@ test_find_in_equals() ->
         {[8], 3},
         {[100], 4}
     ],
-    Cluster = mrs_cluster:cluster(Items),
+    Cluster = erlang_slink:cluster(Items),
     MatchFun = fun(Data) -> Data =:= 1 end,
     ?assert_equal(
         [0, 1],
-        mrs_cluster:strip_dists(mrs_cluster:find(MatchFun, 3, infinity, Cluster))
+        erlang_slink:strip_dists(erlang_slink:find(MatchFun, 3, infinity, Cluster))
     ),
     ?assert_equal(
         [[0, 1], [2, 3]],
-        mrs_cluster:strip_dists(mrs_cluster:find(MatchFun, 4, infinity, Cluster))
+        erlang_slink:strip_dists(erlang_slink:find(MatchFun, 4, infinity, Cluster))
     ),
     ?assert_equal(
         [[[0, 1], [2, 3]], 4],
-        mrs_cluster:strip_dists(mrs_cluster:find(MatchFun, 5, infinity, Cluster))
+        erlang_slink:strip_dists(erlang_slink:find(MatchFun, 5, infinity, Cluster))
     ).
 
 
@@ -71,7 +71,7 @@ test_find() ->
         {[17], 3},
         {[18], 4}
     ],
-    Cluster = mrs_cluster:cluster(Items),
+    Cluster = erlang_slink:cluster(Items),
     Expected = {10.0,
                     [{3.0,
                       [{2.0,
@@ -83,10 +83,10 @@ test_find() ->
     MatchFun = fun(Data) -> Data =:= 1 end,
     ?assert_equal(
         {3.0,[{2.0,[0,1]},2]},
-        mrs_cluster:find(MatchFun, 4, infinity, Cluster)),
+        erlang_slink:find(MatchFun, 4, infinity, Cluster)),
     ?assert_equal(
         {2.0,[0,1]},
-        mrs_cluster:find(MatchFun, 4, 2.5, Cluster)).
+        erlang_slink:find(MatchFun, 4, 2.5, Cluster)).
 
 test_find_ambigous() ->
     Items = [
@@ -96,7 +96,7 @@ test_find_ambigous() ->
         {[17], 3},
         {[18], 4}
     ],
-    Cluster = mrs_cluster:cluster(Items),
+    Cluster = erlang_slink:cluster(Items),
     Expected = {10.0,
                     [{3.0,
                       [{2.0,
@@ -108,10 +108,10 @@ test_find_ambigous() ->
     MatchFun = fun(Data) -> Data =:= same end,
     ?assert_equal(
         {3.0,[{2.0,[same,1]},same]},
-        mrs_cluster:find(MatchFun, 4, infinity, Cluster)),
+        erlang_slink:find(MatchFun, 4, infinity, Cluster)),
     ?assert_equal(
         {2.0,[same,1]},
-        mrs_cluster:find(MatchFun, 4, 2.5, Cluster)).
+        erlang_slink:find(MatchFun, 4, 2.5, Cluster)).
 
 test_cluster_deluxe() ->
     Items = [
@@ -126,7 +126,7 @@ test_cluster_deluxe() ->
         {[26], item8},
         {[28], item9}
     ],
-    Cluster = mrs_cluster:cluster(Items),
+    Cluster = erlang_slink:cluster(Items),
     Expected =
         {13.0, [
             {3.0, [
@@ -156,19 +156,19 @@ test_cluster_deluxe() ->
 
     AssertFindCluster = fun(Expectation, Item, MaxClusterSize, DistanceCutoff) ->
         MatchFun = fun(Data) -> Data =:= Item end,
-        Res = mrs_cluster:find(MatchFun, MaxClusterSize, DistanceCutoff, Cluster),
+        Res = erlang_slink:find(MatchFun, MaxClusterSize, DistanceCutoff, Cluster),
         case Res of
             not_found ->
                 ?assert_equal(Expectation, Res);
             _ ->
                 ?assert_equal(
                     Expectation,
-                    mrs_cluster:strip_dists(Res))
+                    erlang_slink:strip_dists(Res))
         end
     end,
 
     % test with unlimited size and distance
-    AssertFindCluster(mrs_cluster:strip_dists(Cluster),
+    AssertFindCluster(erlang_slink:strip_dists(Cluster),
                       item0, infinity, infinity),
     % test with never-matching MatchFun
     AssertFindCluster(not_found,
@@ -225,18 +225,18 @@ test_custom_dist_fun() ->
     % we are using a function which puts distante
     % items together
     DistFun = fun([TypeA, CoordA], [TypeB, CoordB]) ->
-        DType   = mrs_cluster:distance([TypeA],  [TypeB]),
-        DCoords = mrs_cluster:distance([CoordA], [CoordB]),
+        DType   = erlang_slink:distance([TypeA],  [TypeB]),
+        DCoords = erlang_slink:distance([CoordA], [CoordB]),
         DCoords + DType * 100
     end,
-    Cluster = mrs_cluster:cluster(Items, DistFun),
+    Cluster = erlang_slink:cluster(Items, DistFun),
     Expected = [[item2,[item5,item8]],
                          [[[item1,item4],item7],
                           [[item0,item3],[item6,item9]]]],
-    ?assert_equal(Expected, mrs_cluster:strip_dists(Cluster)).
+    ?assert_equal(Expected, erlang_slink:strip_dists(Cluster)).
 
 assert_distance(D, A, B) ->
-    ?assert_equal(D, mrs_cluster:distance(A, B)).
+    ?assert_equal(D, erlang_slink:distance(A, B)).
 
 test_distance() ->
     assert_distance(0.0, [0.0], [0.0]),
