@@ -63,7 +63,7 @@ The distances is the distance to the nearest neighbour in the subclusters.
 ### Distance function
 
 In this example above, we used the build-in distance function which calculates the euclidian distance. We can also pass our own distance function.
-Say we want to group those who's weight is an even number: 
+Say we want to group those who's weight is an even or uneven number: 
 
 ```erlang
 3> Dist = fun([_, W1], [_, W2]) -> case W1 rem 2 == W2 rem 2 of true -> 0; false -> 1 end end.
