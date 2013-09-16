@@ -11,7 +11,7 @@ The computational complexity is O(n<sup>2</sup>).
 ## Installation
 
 ```
-git clone git@github.com:wooga/erlang_slink.git
+git clone git@github.com:odo/erlang_slink.git
 cd erlang_slink
 ./rebar get-deps
 ./rebar compile
