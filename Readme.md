@@ -120,7 +120,8 @@ Sometimes only the hierarchy of elements is important:
   [
     [
       <<"Aunt Mary">>,
-      <<"Uncle Robert">>],
+      <<"Uncle Robert">>
+    ],
     <<"Witty Wendy">>
   ]
 ]
