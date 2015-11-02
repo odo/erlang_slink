@@ -118,9 +118,11 @@ build_hierarchy(LDict, PDict, DataT) ->
 default_dist_fun(VectorA, VectorB) ->
     distance(VectorA, VectorB).
 
+% optimizing for 2D-vectors
 distance([XA, YA], [XB, YB]) ->
     math:sqrt(math:pow((XA - XB), 2) + math:pow((YA - YB), 2));
 
+% general case for n-dimensional vectors 
 distance(A, B) ->
     DimPairs = lists:zip(A, B),
     SquareDiffs = lists:map(
